@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # 当前脚本的版本号
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.0.1"
 
 # 远程脚本版本和地址
-REMOTE_SCRIPT_URL="https://raw.githubusercontent.com/Jimmyzxk/add_ip/refs/heads/main/addip.sh"  # 替换为实际远程脚本URL
-REMOTE_VERSION_URL="https://raw.githubusercontent.com/Jimmyzxk/add_ip/refs/heads/main/addip.sh"  # 替换为实际版本信息文件URL
+REMOTE_SCRIPT_URL="https://your-server.com/scripts/addip.sh"  # 替换为实际远程脚本URL
+REMOTE_VERSION_URL="https://your-server.com/scripts/version.txt"  # 替换为实际版本信息文件URL
 
 # 获取当前脚本的版本号
 get_current_version() {
@@ -78,7 +78,13 @@ add_ipv4() {
 add_ipv6() {
     local ip_address=$1
     local interface=$2
-    ip -6 addr add $ip_address dev $interface
+    echo "正在添加IPv6地址：$ip_address 到接口 $interface"
+    ip -6 addr add $ip_address dev $interface 2>&1 | tee /tmp/ipv6_add.log
+    if [ $? -eq 0 ]; then
+        echo "IPv6地址添加成功！"
+    else
+        echo "IPv6地址添加失败！请检查日志 /tmp/ipv6_add.log"
+    fi
 }
 
 # 重启网络服务
